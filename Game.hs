@@ -25,10 +25,6 @@ data Coord = Coord Int Int
 
 type Grid = [[Cell]]
 
--- delay in ms between steps, change as needed
-delay :: Int
-delay = 250000
-
 -- Get cell from grid given coords
 -- normalise so works across infinite
 get_cell :: Coord -> Grid -> Cell
@@ -95,14 +91,14 @@ update cell (Coord x y) touching_cells
   where
     num_live = length $ filter (== Live) touching_cells
 
-run :: Grid -> IO ()
-run grid = do
+run :: Grid -> Int -> IO ()
+run grid delay = do
   putStrLn $ unlines $ map (concatMap show) grid
   threadDelay delay
   let newGrid = [ [ update (get_cell (Coord x y) grid) (Coord x y) (get_surrounding (Coord x y) grid)
                   | x <- [0 .. get_width grid - 1] ]
                   | y <- [0 .. get_height grid - 1] ]
-  run newGrid
+  run newGrid delay
 
 -- examples
 example =

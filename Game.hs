@@ -30,25 +30,14 @@ type Grid = [[Cell]]
 get_cell :: Coord -> Grid -> Cell
 get_cell (Coord x y) grid = grid !! _x !! _y
   where
-    _x = normalise_x x grid
-    _y = normalise_y y grid
+    _x = normalise x (get_width grid)
+    _y = normalise y (get_height grid)
 
--- TODO: pass width, height to get_cell - calc when grid is read in to avoid redundant computation
-normalise_x :: Int -> Grid -> Int
-normalise_x x grid
-  | x >= width = x `rem` width
-  | x /= 0 && x < 0 = width + (x `rem` width)
-  | otherwise = x
-  where
-    width = get_width grid
-
-normalise_y :: Int -> Grid -> Int
-normalise_y y grid
-  | y >= height = y `rem` height
-  | y /= 0 && y < 0 = height + (y `rem` height)
-  | otherwise = y
-  where
-    height = get_height grid
+normalise :: Int -> Int -> Int
+normalise n max
+  | n >= max = n `rem` max
+  | n < 0 = max + (n `rem` max)
+  | otherwise = n
 
 get_width :: Grid -> Int
 get_width (x : xs) = length x
